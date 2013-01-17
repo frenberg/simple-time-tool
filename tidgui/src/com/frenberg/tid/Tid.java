@@ -22,20 +22,15 @@ public class Tid {
 	private long workingTimeMillis;
 
 	public Map<String, String> calculate(String input) {
-		//currentTimeMillis = System.currentTimeMillis(); // TODO trunc to minutes
-		Calendar cal = Calendar.getInstance(); // locale-specific
-		cal.setTime(new Date());
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		currentTimeMillis = cal.getTimeInMillis();		
-		
+		currentTimeMillis = System.currentTimeMillis();
+
 		int numberOfValidInputs = 0;
 		long time = 0;
 		long tmp = 0;
 		long accumulatedTime = 0;
 		Map<String, String> returnStrings = new HashMap<String, String>();
 		
-		//Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
 			//kortare arbetstid under juni-augusti (7,18)
 			workingTimeMillis = 25848000;
@@ -93,6 +88,11 @@ public class Tid {
 
 			writeLog(String.format("%.2f",accumulatedTime / 3600000.0));
 
+			cal.setTime(new Date(date));
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			date = cal.getTimeInMillis();		
+			
 			returnStrings.put("notificationTime", Long.toString(date)); 
 			returnStrings.put("response", 
 					String.format(
