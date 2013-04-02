@@ -14,20 +14,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Tid {
 	private long currentTimeMillis;
 	private long workingTimeMillis;
+	private long longestPause = 0;
 
 	public Map<String, String> calculate(String input) {
 		currentTimeMillis = System.currentTimeMillis();
 
 		int numberOfValidInputs = 0;
-		long time = 0;
-		long tmp = 0;
-		long accumulatedTime = 0;
+		long time = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0;
+		boolean altered = false;
 		Map<String, String> returnStrings = new HashMap<String, String>();
 		
 		Calendar cal = Calendar.getInstance();
@@ -40,6 +41,7 @@ public class Tid {
 		}
 		
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 		
 		String[] lines = input.split("\r?\n|\r");
 		
@@ -53,25 +55,36 @@ public class Tid {
 					time = parser.parse(line).getTime();
 				} catch (ParseException e) {
 					// ska inte hända med rätt regexp
+					numberOfValidInputs--;
+					continue;
 				}
 				if (numberOfValidInputs % 2 == 0) {
-					accumulatedTime += (time - tmp);
+					lastTime = time;
+					accumulatedTime += (time - tmpTime);
 				} else {
-					tmp = time;
+					tmpTime = time;
+					if (numberOfValidInputs > 1 && longestPause <  (time-lastTime)) {
+						longestPause = (time-lastTime);
+					}
 				}
-			}			
+			}
 		}
 
-		// ojämna stämplingar så visas tidpunkt för full arbetsdag
+		if (longestPause > 0 && longestPause < 1800000) { // mindre än en halvtimmas lunch?
+			long diffToSubtract = 1800000 - longestPause;
+			accumulatedTime -= diffToSubtract;
+			altered = true;
+		}
+		
+		// ojämna stämplingar så visas arbetad tid och tidpunkt för full arbetsdag
 		if (numberOfValidInputs % 2 == 1 && numberOfValidInputs > 0) {
-			SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 			
 			try {
 				time = parser.parse(formatter.format(new Date(currentTimeMillis))).getTime(); // hela minuter
 			} catch (ParseException e) {
 				//ska inte hända
 			}
-			accumulatedTime += (time - tmp);
+			accumulatedTime += (time - tmpTime);
 
 			long date = currentTimeMillis + (workingTimeMillis - accumulatedTime);
 			if (numberOfValidInputs == 1) {
@@ -96,10 +109,13 @@ public class Tid {
 			returnStrings.put("notificationTime", Long.toString(date)); 
 			returnStrings.put("response", 
 					String.format(
-					"Du får gå hem %s, går du hem nu har du jobbat %.2f timmar (%.2fh).",
-					formatter.format(new Date(date)),
-					accumulatedTime / 3600000.0,
-					Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
+						"Du får gå hem %s, går du hem nu har du jobbat %.2f timmar (%.2fh).%s",
+						formatter.format(new Date(date)),
+						accumulatedTime / 3600000.0,
+						Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0),
+						(altered ? "*" : "")
+					)
+			);
 		} else {
 			// Summera
 			if (numberOfValidInputs == 2) {
@@ -107,8 +123,11 @@ public class Tid {
 			}
 			returnStrings.put("response", 
 					String.format(
-					"Summerad arbetstid: %.2f timmar (hundradelar)",
-					accumulatedTime / 3600000.0));
+						"Summerad arbetstid: %.2f timmar (hundradelar).%s",
+						accumulatedTime / 3600000.0,
+						(altered ? "*" : "")
+					)
+			);
 		}
 
 		writeLog(String.format("%.2f",accumulatedTime / 3600000.0));
