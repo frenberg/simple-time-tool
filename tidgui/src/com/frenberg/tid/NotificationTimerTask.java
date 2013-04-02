@@ -24,7 +24,6 @@ public class NotificationTimerTask extends TimerTask {
 				10000);
 		new TelegraphQueue().add(telegraph);
 		try{
-	        //File file = new File("./resources/alert.wav");
 			URL file = getClass().getClassLoader().getResource("alert.wav");
             Clip clip = AudioSystem.getClip();
             AudioInputStream ais = AudioSystem.getAudioInputStream( file );
