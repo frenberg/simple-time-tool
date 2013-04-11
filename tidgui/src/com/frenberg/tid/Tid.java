@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -28,23 +27,22 @@ public class Tid {
 
 		int numberOfValidInputs = 0;
 		long time = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0;
-		boolean altered = false;
 		Map<String, String> returnStrings = new HashMap<String, String>();
-		
+
 		Calendar cal = Calendar.getInstance();
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
-			//kortare arbetstid under juni-augusti (7,18)
+			// kortare arbetstid under juni-augusti (7,18)
 			workingTimeMillis = 25848000;
 		} else {
-			//övrig period är ordinarie arbetstid 8,18
-			workingTimeMillis =  29448000;
+			// övrig period är ordinarie arbetstid 8,18
+			workingTimeMillis = 29448000;
 		}
-		
+
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-		
+
 		String[] lines = input.split("\r?\n|\r");
-		
+
 		for (String line : lines) {
 			time = 0;
 			line = line.trim();
@@ -63,77 +61,76 @@ public class Tid {
 					accumulatedTime += (time - tmpTime);
 				} else {
 					tmpTime = time;
-					if (numberOfValidInputs > 1 && longestPause <  (time-lastTime)) {
-						longestPause = (time-lastTime);
+					if (numberOfValidInputs > 1
+							&& longestPause < (time - lastTime)) {
+						longestPause = (time - lastTime);
 					}
 				}
 			}
 		}
 
-		if (longestPause > 0 && longestPause < 1800000) { // mindre än en halvtimmas lunch?
-			long diffToSubtract = 1800000 - longestPause;
-			accumulatedTime -= diffToSubtract;
-			altered = true;
+		if (longestPause > 0 && longestPause < 1800000) { // mindre än en
+															// halvtimmas lunch?
+			returnStrings
+					.put("warning",
+							"Om du varit utst�mplad under mindre �n 30 minuter f�r lunch m�ste du korrigera st�mplingstiden.\nOch ber�kna p� nytt.");
 		}
-		
-		// ojämna stämplingar så visas arbetad tid och tidpunkt för full arbetsdag
+
+		// ojämna stämplingar så visas arbetad tid och tidpunkt för full
+		// arbetsdag
 		if (numberOfValidInputs % 2 == 1 && numberOfValidInputs > 0) {
-			
+
 			try {
-				time = parser.parse(formatter.format(new Date(currentTimeMillis))).getTime(); // hela minuter
+				time = parser.parse(
+						formatter.format(new Date(currentTimeMillis)))
+						.getTime(); // hela minuter
 			} catch (ParseException e) {
-				//ska inte hända
+				// ska inte hända
 			}
 			accumulatedTime += (time - tmpTime);
 
-			long date = currentTimeMillis + (workingTimeMillis - accumulatedTime);
+			long date = currentTimeMillis
+					+ (workingTimeMillis - accumulatedTime);
 			if (numberOfValidInputs == 1) {
 				// bara en stämpling, lägg på en timmes lunch
 				date += 3600000;
 			}
-			
-			
+
 			// bara en stämpling och tid på dagen är nu efter 13 - dra av en
 			// timme för lunch
 			if (numberOfValidInputs == 1 && time > 43200000) {
 				accumulatedTime -= 3600000;
 			}
 
-			writeLog(String.format("%.2f",accumulatedTime / 3600000.0));
+			writeLog(String.format("%.2f", accumulatedTime / 3600000.0));
 
 			cal.setTime(new Date(date));
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			date = cal.getTimeInMillis();		
-			
-			returnStrings.put("notificationTime", Long.toString(date)); 
-			returnStrings.put("response", 
-					String.format(
-						"Du får gå hem %s, går du hem nu har du jobbat %.2f timmar (%.2fh).%s",
-						formatter.format(new Date(date)),
-						accumulatedTime / 3600000.0,
-						Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0),
-						(altered ? "*" : "")
-					)
-			);
+			date = cal.getTimeInMillis();
+
+			returnStrings.put("notificationTime", Long.toString(date));
+			returnStrings
+					.put("response",
+							String.format(
+									"Du får gå hem %s, går du hem nu har du jobbat %.2f timmar (%.2fh).",
+									formatter.format(new Date(date)),
+									accumulatedTime / 3600000.0,
+									Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
 		} else {
 			// Summera
 			if (numberOfValidInputs == 2) {
 				accumulatedTime -= 3600000;
 			}
-			returnStrings.put("response", 
-					String.format(
-						"Summerad arbetstid: %.2f timmar (hundradelar).%s",
-						accumulatedTime / 3600000.0,
-						(altered ? "*" : "")
-					)
-			);
+			returnStrings.put("response", String.format(
+					"Summerad arbetstid: %.2f timmar (hundradelar).",
+					accumulatedTime / 3600000.0));
 		}
 
-		writeLog(String.format("%.2f",accumulatedTime / 3600000.0));
+		writeLog(String.format("%.2f", accumulatedTime / 3600000.0));
 		return returnStrings;
 	}
-	
+
 	private boolean writeLog(String time) {
 		String fileRow;
 		ArrayList<String> fileContentRows = new ArrayList<String>();
@@ -141,7 +138,7 @@ public class Tid {
 		String today = formatter.format(new Date(this.currentTimeMillis));
 
 		// start by adding current calculation as first row in file
-		fileContentRows.add( today + "\t" + time );
+		fileContentRows.add(today + "\t" + time);
 
 		// Read file and find a row for current date.
 		try {
@@ -151,24 +148,23 @@ public class Tid {
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fileInputStream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			
+
 			// Read File Line By Line
 			while ((fileRow = br.readLine()) != null) {
 				if (!fileRow.startsWith(today)) {
 					fileContentRows.add(fileRow);
 				}
 			}
-			
+
 			// Close the input stream
 			in.close();
 		} catch (FileNotFoundException e) {
-			//this is ok...
+			// this is ok...
 		} catch (Exception e) {// Catch exception if any
 			e.printStackTrace();
 			return false;
 		}
 
-		
 		FileWriter fileOutputStream;
 		try {
 			fileOutputStream = new FileWriter("tidhistorik.log");
@@ -182,5 +178,5 @@ public class Tid {
 		}
 
 		return true;
-	}	
+	}
 }
