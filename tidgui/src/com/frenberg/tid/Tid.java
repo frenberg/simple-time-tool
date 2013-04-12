@@ -73,7 +73,7 @@ public class Tid {
 															// halvtimmas lunch?
 			returnStrings
 					.put("warning",
-							"Om du varit utstämplad under mindre än 30 minuter för lunch måste du korrigera stämplingstiden.\nOch beräkna på nytt.");
+							"Om du varit utst√§mplad under mindre √§n 30 minuter f√∂r lunch m√•ste du korrigera st√§mplingstiden.\nOch ber√§kna p√• nytt.");
 		}
 
 		// oj√§mna st√§mplingar s√• visas arbetad tid och tidpunkt f√∂r full
