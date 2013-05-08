@@ -22,7 +22,7 @@ public class Tid {
 	private long workingTimeMillis;
 	private long longestPause = 0;
 
-	public Map<String, String> calculate(String input) {
+	public Map<String, String> calculate(String input, boolean dayBeforeHoliday) {
 		currentTimeMillis = System.currentTimeMillis();
 
 		int numberOfValidInputs = 0;
@@ -36,6 +36,10 @@ public class Tid {
 		} else {
 			// övrig period är ordinarie arbetstid 8,18
 			workingTimeMillis = 29448000;
+		}
+		
+		if (dayBeforeHoliday) {
+			workingTimeMillis -= 7200000; // two hours less if day before holiday
 		}
 
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");

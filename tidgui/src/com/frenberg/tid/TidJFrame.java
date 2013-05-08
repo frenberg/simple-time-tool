@@ -22,6 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JCheckBox;
 
 public class TidJFrame extends JFrame {
 
@@ -36,6 +37,7 @@ public class TidJFrame extends JFrame {
 	private JLabel lblKortnr;
 	private JLabel lblPinkod;
 	private JPasswordField pin;
+	private JCheckBox chkDayBeforeHoliday;
 
 	/**
 	 * Create the frame.
@@ -53,10 +55,10 @@ public class TidJFrame extends JFrame {
 
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[] { 0, 83, 0, 0 };
-		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
+		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
 		gbl_contentPane.columnWeights = new double[] { 0.0, 0.0, 1.0,
 				Double.MIN_VALUE };
-		gbl_contentPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 1.0,
+		gbl_contentPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		contentPane.setLayout(gbl_contentPane);
 
@@ -151,13 +153,14 @@ public class TidJFrame extends JFrame {
 
 		GridBagConstraints gbc_button = new GridBagConstraints();
 		gbc_button.anchor = GridBagConstraints.NORTHWEST;
-		gbc_button.insets = new Insets(0, 0, 0, 5);
+		gbc_button.insets = new Insets(0, 0, 5, 5);
 		gbc_button.gridx = 0;
 		gbc_button.gridy = 4;
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Map<String, String> response = new Tid().calculate(textArea
-						.getText());
+						.getText(),
+						chkDayBeforeHoliday.isSelected());
 				textPane.setText(response.get("response"));
 				if (response.get("warning") != null) {
 					JOptionPane.showMessageDialog(contentPane,
@@ -186,12 +189,22 @@ public class TidJFrame extends JFrame {
 		textPane = new JTextPane();
 		textPane.setEditable(false);
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
+		gbc_textPane.insets = new Insets(0, 0, 5, 0);
 		gbc_textPane.gridwidth = 2;
 		gbc_textPane.anchor = GridBagConstraints.NORTH;
 		gbc_textPane.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textPane.gridx = 1;
 		gbc_textPane.gridy = 4;
 		contentPane.add(textPane, gbc_textPane);
+		
+		chkDayBeforeHoliday = new JCheckBox("Dag före röd dag");
+		GridBagConstraints gbc_chkDayBeforeHoliday = new GridBagConstraints();
+		gbc_chkDayBeforeHoliday.anchor = GridBagConstraints.WEST;
+		gbc_chkDayBeforeHoliday.gridwidth = 2;
+		gbc_chkDayBeforeHoliday.insets = new Insets(0, 0, 0, 5);
+		gbc_chkDayBeforeHoliday.gridx = 0;
+		gbc_chkDayBeforeHoliday.gridy = 5;
+		contentPane.add(chkDayBeforeHoliday, gbc_chkDayBeforeHoliday);
 	}
 
 }
