@@ -22,7 +22,7 @@ public class Tid {
 	private long workingTimeMillis;
 	private long longestPause = 0;
 
-	public Map<String, String> calculate(String input) {
+	public Map<String, String> calculate(String input, boolean dayBeforeHoliday) {
 		currentTimeMillis = System.currentTimeMillis();
 
 		int numberOfValidInputs = 0;
@@ -36,6 +36,10 @@ public class Tid {
 		} else {
 			// √∂vrig period √§r ordinarie arbetstid 8,18
 			workingTimeMillis = 29448000;
+		}
+		
+		if (dayBeforeHoliday) {
+			workingTimeMillis -= 7200000; // two hours less if day before holiday
 		}
 
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
@@ -73,7 +77,7 @@ public class Tid {
 															// halvtimmas lunch?
 			returnStrings
 					.put("warning",
-							"Om du varit utstämplad under mindre än 30 minuter för lunch måste du korrigera stämplingstiden.\nOch beräkna på nytt.");
+							"Om du varit utst√§mplad under mindre √§n 30 minuter f√∂r lunch m√•ste du korrigera st√§mplingstiden.\nOch ber√§kna p√• nytt.");
 		}
 
 		// oj√§mna st√§mplingar s√• visas arbetad tid och tidpunkt f√∂r full
