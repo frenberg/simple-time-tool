@@ -28,11 +28,11 @@ public class TidJFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private final JButton button = new JButton("Beräkna");
-	private JTextArea textArea;
-	private JTextPane textPane;
+	private final JButton btnCalculate = new JButton("Beräkna");
+	private JTextArea txtTimes;
+	private JTextPane txtResultPane;
 	private Timer timer;
-	private JButton fetch = new JButton("Hämta");
+	private JButton btnFetch = new JButton("Hämta");
 	private JTextField kortnr;
 	private JLabel lblKortnr;
 	private JLabel lblPinkod;
@@ -53,55 +53,55 @@ public class TidJFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 0, 83, 0, 0 };
-		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
-		gbl_contentPane.columnWeights = new double[] { 0.0, 0.0, 1.0,
+		GridBagLayout contentPaneGBLayout = new GridBagLayout();
+		contentPaneGBLayout.columnWidths = new int[] { 0, 83, 0, 0 };
+		contentPaneGBLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+		contentPaneGBLayout.columnWeights = new double[] { 0.0, 0.0, 1.0,
 				Double.MIN_VALUE };
-		gbl_contentPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
+		contentPaneGBLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
 				Double.MIN_VALUE };
-		contentPane.setLayout(gbl_contentPane);
+		contentPane.setLayout(contentPaneGBLayout);
 
 		lblKortnr = new JLabel("Anställningsnr");
-		GridBagConstraints gbc_lblKortnr = new GridBagConstraints();
-		gbc_lblKortnr.anchor = GridBagConstraints.NORTHWEST;
-		gbc_lblKortnr.insets = new Insets(0, 0, 5, 5);
-		gbc_lblKortnr.gridx = 0;
-		gbc_lblKortnr.gridy = 0;
-		contentPane.add(lblKortnr, gbc_lblKortnr);
+		GridBagConstraints lblKortnrGBLayout = new GridBagConstraints();
+		lblKortnrGBLayout.anchor = GridBagConstraints.NORTHWEST;
+		lblKortnrGBLayout.insets = new Insets(0, 0, 5, 5);
+		lblKortnrGBLayout.gridx = 0;
+		lblKortnrGBLayout.gridy = 0;
+		contentPane.add(lblKortnr, lblKortnrGBLayout);
 
 		lblPinkod = new JLabel("Pinkod");
-		GridBagConstraints gbc_lblPinkod = new GridBagConstraints();
-		gbc_lblPinkod.anchor = GridBagConstraints.NORTHWEST;
-		gbc_lblPinkod.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPinkod.gridx = 1;
-		gbc_lblPinkod.gridy = 0;
-		contentPane.add(lblPinkod, gbc_lblPinkod);
+		GridBagConstraints lblPinkodGBLayout = new GridBagConstraints();
+		lblPinkodGBLayout.anchor = GridBagConstraints.NORTHWEST;
+		lblPinkodGBLayout.insets = new Insets(0, 0, 5, 5);
+		lblPinkodGBLayout.gridx = 1;
+		lblPinkodGBLayout.gridy = 0;
+		contentPane.add(lblPinkod, lblPinkodGBLayout);
 
 		kortnr = new JTextField();
-		GridBagConstraints gbc_kortnr = new GridBagConstraints();
-		gbc_kortnr.anchor = GridBagConstraints.WEST;
-		gbc_kortnr.insets = new Insets(0, 0, 5, 5);
-		gbc_kortnr.gridx = 0;
-		gbc_kortnr.gridy = 1;
-		contentPane.add(kortnr, gbc_kortnr);
+		GridBagConstraints kortnrGBLayout = new GridBagConstraints();
+		kortnrGBLayout.anchor = GridBagConstraints.WEST;
+		kortnrGBLayout.insets = new Insets(0, 0, 5, 5);
+		kortnrGBLayout.gridx = 0;
+		kortnrGBLayout.gridy = 1;
+		contentPane.add(kortnr, kortnrGBLayout);
 		kortnr.setColumns(3);
 
 		pin = new JPasswordField();
-		GridBagConstraints gbc_pin = new GridBagConstraints();
-		gbc_pin.anchor = GridBagConstraints.WEST;
-		gbc_pin.insets = new Insets(0, 0, 5, 5);
-		gbc_pin.gridx = 1;
-		gbc_pin.gridy = 1;
-		contentPane.add(pin, gbc_pin);
+		GridBagConstraints pinGBLayout = new GridBagConstraints();
+		pinGBLayout.anchor = GridBagConstraints.WEST;
+		pinGBLayout.insets = new Insets(0, 0, 5, 5);
+		pinGBLayout.gridx = 1;
+		pinGBLayout.gridy = 1;
+		contentPane.add(pin, pinGBLayout);
 		pin.setColumns(4);
 
-		GridBagConstraints gbc_fetch = new GridBagConstraints();
-		gbc_fetch.insets = new Insets(0, 0, 5, 0);
-		gbc_fetch.anchor = GridBagConstraints.NORTHWEST;
-		gbc_fetch.gridx = 2;
-		gbc_fetch.gridy = 1;
-		fetch.addActionListener(new ActionListener() {
+		GridBagConstraints fetchButtonGBLayout = new GridBagConstraints();
+		fetchButtonGBLayout.insets = new Insets(0, 0, 5, 0);
+		fetchButtonGBLayout.anchor = GridBagConstraints.NORTHWEST;
+		fetchButtonGBLayout.gridx = 2;
+		fetchButtonGBLayout.gridy = 1;
+		btnFetch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<String> stamplingar = null;
 				CronaCom con = new CronaCom();
@@ -117,51 +117,51 @@ public class TidJFrame extends JFrame {
 						// newtimes.concat(stampling + "\n");
 						newtimes += stampling + "\n";
 					}
-					textArea.setText(newtimes);
+					txtTimes.setText(newtimes);
 				}
 			}
 		});
-		contentPane.add(fetch, gbc_fetch);
+		contentPane.add(btnFetch, fetchButtonGBLayout);
 
-		JTextPane txtpnSkrivTidFr = new JTextPane();
-		txtpnSkrivTidFr.setEnabled(false);
-		txtpnSkrivTidFr.setEditable(false);
-		txtpnSkrivTidFr
+		JTextPane txtHelptext = new JTextPane();
+		txtHelptext.setEnabled(false);
+		txtHelptext.setEditable(false);
+		txtHelptext
 				.setText("Skriv tid för in, utstämpling. En stämpling per rad, varannan in och varannan ut. Ex.\n08:00 <ENTER> (in)\n12:00 <ENTER> (ut)\n12:30 <ENTER> (in)\n16:30 <ENTER> (ut)\nKlicka på Beräkna och så summerar programmet din dag.");
 
-		GridBagConstraints gbc_txtpnSkrivTidFr = new GridBagConstraints();
-		gbc_txtpnSkrivTidFr.gridwidth = 3;
-		gbc_txtpnSkrivTidFr.insets = new Insets(0, 0, 5, 0);
-		gbc_txtpnSkrivTidFr.fill = GridBagConstraints.BOTH;
-		gbc_txtpnSkrivTidFr.gridx = 0;
-		gbc_txtpnSkrivTidFr.gridy = 2;
-		contentPane.add(txtpnSkrivTidFr, gbc_txtpnSkrivTidFr);
+		GridBagConstraints txtHelptextGBLayout = new GridBagConstraints();
+		txtHelptextGBLayout.gridwidth = 3;
+		txtHelptextGBLayout.insets = new Insets(0, 0, 5, 0);
+		txtHelptextGBLayout.fill = GridBagConstraints.BOTH;
+		txtHelptextGBLayout.gridx = 0;
+		txtHelptextGBLayout.gridy = 2;
+		contentPane.add(txtHelptext, txtHelptextGBLayout);
 
-		textArea = new JTextArea(5, 5);
-		textArea.setLineWrap(true);
-		JScrollPane scrollPane = new JScrollPane(textArea);
+		txtTimes = new JTextArea(5, 5);
+		txtTimes.setLineWrap(true);
+		JScrollPane scrollPane = new JScrollPane(txtTimes);
 		scrollPane
 				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-		GridBagConstraints gbc_textArea = new GridBagConstraints();
-		gbc_textArea.gridwidth = 3;
-		gbc_textArea.insets = new Insets(0, 0, 5, 0);
-		gbc_textArea.fill = GridBagConstraints.BOTH;
-		gbc_textArea.gridx = 0;
-		gbc_textArea.gridy = 3;
-		contentPane.add(scrollPane, gbc_textArea);
+		GridBagConstraints txtTimesGBLayout = new GridBagConstraints();
+		txtTimesGBLayout.gridwidth = 3;
+		txtTimesGBLayout.insets = new Insets(0, 0, 5, 0);
+		txtTimesGBLayout.fill = GridBagConstraints.BOTH;
+		txtTimesGBLayout.gridx = 0;
+		txtTimesGBLayout.gridy = 3;
+		contentPane.add(scrollPane, txtTimesGBLayout);
 
-		GridBagConstraints gbc_button = new GridBagConstraints();
-		gbc_button.anchor = GridBagConstraints.NORTHWEST;
-		gbc_button.insets = new Insets(0, 0, 5, 5);
-		gbc_button.gridx = 0;
-		gbc_button.gridy = 4;
-		button.addActionListener(new ActionListener() {
+		GridBagConstraints btnCalculateGBLayout = new GridBagConstraints();
+		btnCalculateGBLayout.anchor = GridBagConstraints.NORTHWEST;
+		btnCalculateGBLayout.insets = new Insets(0, 0, 5, 5);
+		btnCalculateGBLayout.gridx = 0;
+		btnCalculateGBLayout.gridy = 4;
+		btnCalculate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Map<String, String> response = new Tid().calculate(textArea
+				Map<String, String> response = new Tid().calculate(txtTimes
 						.getText(),
 						chkDayBeforeHoliday.isSelected());
-				textPane.setText(response.get("response"));
+				txtResultPane.setText(response.get("response"));
 				if (response.get("warning") != null) {
 					JOptionPane.showMessageDialog(contentPane,
 							response.get("warning"), "Kontrollera",
@@ -184,27 +184,28 @@ public class TidJFrame extends JFrame {
 				}
 			}
 		});
-		contentPane.add(button, gbc_button);
+		contentPane.add(btnCalculate, btnCalculateGBLayout);
 
-		textPane = new JTextPane();
-		textPane.setEditable(false);
-		GridBagConstraints gbc_textPane = new GridBagConstraints();
-		gbc_textPane.insets = new Insets(0, 0, 5, 0);
-		gbc_textPane.gridwidth = 2;
-		gbc_textPane.anchor = GridBagConstraints.NORTH;
-		gbc_textPane.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textPane.gridx = 1;
-		gbc_textPane.gridy = 4;
-		contentPane.add(textPane, gbc_textPane);
+		txtResultPane = new JTextPane();
+		txtResultPane.setEditable(false);
+		GridBagConstraints txtResultPaneGBLayout = new GridBagConstraints();
+		txtResultPaneGBLayout.insets = new Insets(0, 0, 5, 0);
+		txtResultPaneGBLayout.gridwidth = 2;
+		txtResultPaneGBLayout.anchor = GridBagConstraints.NORTH;
+		txtResultPaneGBLayout.fill = GridBagConstraints.HORIZONTAL;
+		txtResultPaneGBLayout.gridx = 1;
+		txtResultPaneGBLayout.gridy = 4;
+		contentPane.add(txtResultPane, txtResultPaneGBLayout);
 		
 		chkDayBeforeHoliday = new JCheckBox("Dag före röd dag");
-		GridBagConstraints gbc_chkDayBeforeHoliday = new GridBagConstraints();
-		gbc_chkDayBeforeHoliday.anchor = GridBagConstraints.WEST;
-		gbc_chkDayBeforeHoliday.gridwidth = 2;
-		gbc_chkDayBeforeHoliday.insets = new Insets(0, 0, 0, 5);
-		gbc_chkDayBeforeHoliday.gridx = 0;
-		gbc_chkDayBeforeHoliday.gridy = 5;
-		contentPane.add(chkDayBeforeHoliday, gbc_chkDayBeforeHoliday);
+		chkDayBeforeHoliday.setBackground(Color.WHITE);
+		GridBagConstraints chkDayBeforeHolidayGBLayout = new GridBagConstraints();
+		chkDayBeforeHolidayGBLayout.anchor = GridBagConstraints.WEST;
+		chkDayBeforeHolidayGBLayout.gridwidth = 2;
+		chkDayBeforeHolidayGBLayout.insets = new Insets(0, 0, 0, 5);
+		chkDayBeforeHolidayGBLayout.gridx = 0;
+		chkDayBeforeHolidayGBLayout.gridy = 5;
+		contentPane.add(chkDayBeforeHoliday, chkDayBeforeHolidayGBLayout);
 	}
 
 }
