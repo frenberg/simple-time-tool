@@ -77,7 +77,7 @@ public class Tid {
 															// halvtimmas lunch?
 			returnStrings
 					.put("warning",
-							"Om du varit utstämplad under mindre än 30 minuter för lunch måste du korrigera stämplingstiden.\nOch beräkna på nytt.");
+							"Om du varit utstämplad under mindre än 30 minuter för lunch,\nmåste du korrigera stämplingstiden och beräkna på nytt.");
 		}
 
 		// ojämna stämplingar så visas arbetad tid och tidpunkt för full
@@ -127,8 +127,9 @@ public class Tid {
 				accumulatedTime -= 3600000;
 			}
 			returnStrings.put("response", String.format(
-					"Summerad arbetstid: %.2f timmar (hundradelar).",
-					accumulatedTime / 3600000.0));
+					"Summerad arbetstid: %.2f timmar (%.2fh).",
+					accumulatedTime / 3600000.0,
+					Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
 		}
 
 		writeLog(String.format("%.2f", accumulatedTime / 3600000.0));
