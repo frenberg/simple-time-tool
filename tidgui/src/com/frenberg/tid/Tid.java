@@ -33,15 +33,17 @@ public class Tid {
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
 			// kortare arbetstid under juni-augusti (7,18)
 			workingTimeMillis = 25848000;
+			if (dayBeforeHoliday) {
+				workingTimeMillis -= 3600000; // one hour less if day before holiday
+			}
 		} else {
 			// övrig period är ordinarie arbetstid 8,18
 			workingTimeMillis = 29448000;
+			if (dayBeforeHoliday) {
+				workingTimeMillis -= 7200000; // two hours less if day before holiday
+			}
 		}
 		
-		if (dayBeforeHoliday) {
-			workingTimeMillis -= 7200000; // two hours less if day before holiday
-		}
-
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 
