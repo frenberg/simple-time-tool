@@ -6,13 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -48,8 +43,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import javax.swing.SwingConstants;
 
 public class TidJFrame extends JFrame {
 
@@ -80,14 +73,14 @@ public class TidJFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 590, 380);
 		setResizable(false);
-		
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setBorder(null);
-        tabbedPane.setBackground(Color.WHITE);
-		
+
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.setBorder(null);
+		tabbedPane.setBackground(Color.WHITE);
+
 		JPanel contentPane = setupMainContentPane();
 		JPanel schemaPane = setupSchemaContentPane();
-		
+
 		Map<Integer, Double> schema = getSchemaFromXML();
 		mondayField.setText(schema.get(0).toString());
 		tuesdayField.setText(schema.get(1).toString());
@@ -96,14 +89,13 @@ public class TidJFrame extends JFrame {
 		fridayField.setText(schema.get(4).toString());
 		saturdayField.setText(schema.get(5).toString());
 		sundayField.setText(schema.get(6).toString());
-		
+
 		tabbedPane.addTab("Main", contentPane);
 		tabbedPane.addTab("Schema", schemaPane);
-		
+
 		setContentPane(tabbedPane);
 	}
 
-	
 	private JPanel setupMainContentPane() {
 		JPanel contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -114,8 +106,8 @@ public class TidJFrame extends JFrame {
 		contentPaneGBLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
 		contentPaneGBLayout.columnWeights = new double[] { 0.0, 0.0, 1.0,
 				Double.MIN_VALUE };
-		contentPaneGBLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
-				Double.MIN_VALUE };
+		contentPaneGBLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0,
+				1.0, 0.0, Double.MIN_VALUE };
 		contentPane.setLayout(contentPaneGBLayout);
 
 		JLabel lblKortnr = new JLabel("Anställningsnr");
@@ -215,9 +207,8 @@ public class TidJFrame extends JFrame {
 		btnCalculate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				HashMap<Integer, Double> schema = getSchemaFromXML();
-				Map<String, String> response = new Tid().calculate(txtTimes
-						.getText(),
-						chkDayBeforeHoliday.isSelected(),
+				Map<String, String> response = new Tid().calculate(
+						txtTimes.getText(), chkDayBeforeHoliday.isSelected(),
 						schema);
 				txtResultPane.setText(response.get("response"));
 				if (response.get("warning") != null) {
@@ -254,7 +245,7 @@ public class TidJFrame extends JFrame {
 		txtResultPaneGBLayout.gridx = 1;
 		txtResultPaneGBLayout.gridy = 4;
 		contentPane.add(txtResultPane, txtResultPaneGBLayout);
-		
+
 		chkDayBeforeHoliday = new JCheckBox("Dag före röd dag");
 		chkDayBeforeHoliday.setBackground(Color.WHITE);
 		GridBagConstraints chkDayBeforeHolidayGBLayout = new GridBagConstraints();
@@ -264,7 +255,7 @@ public class TidJFrame extends JFrame {
 		chkDayBeforeHolidayGBLayout.gridx = 0;
 		chkDayBeforeHolidayGBLayout.gridy = 5;
 		contentPane.add(chkDayBeforeHoliday, chkDayBeforeHolidayGBLayout);
-		
+
 		return contentPane;
 	}
 
@@ -272,18 +263,18 @@ public class TidJFrame extends JFrame {
 		JPanel schemaPane = new JPanel();
 		schemaPane.setBackground(Color.WHITE);
 		GridBagLayout layout = new GridBagLayout();
-		layout.columnWidths = new int[] {30, 67, 454, 0, 0};
-		layout.rowHeights = new int[] {42, 0, 0, 0, 0, 0, 0, 0, 0};
-		layout.columnWeights = new double[] { 0.0, 1.0, 0.0,
-				Double.MIN_VALUE };
-		layout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0 };
-		
+		layout.columnWidths = new int[] { 30, 67, 454, 0, 0 };
+		layout.rowHeights = new int[] { 42, 0, 0, 0, 0, 0, 0, 0, 0 };
+		layout.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		layout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0 };
+
 		schemaPane.setLayout(layout);
-		
+
 		JTextPane lblSkrivDittVeckoschema = new JTextPane();
 		lblSkrivDittVeckoschema.setEditable(false);
-		lblSkrivDittVeckoschema.setText("Skriv ditt veckoschema om du arbetar deltid. Dagar med full tid\nanges med '8.18' som räknas om till 7.18 under sommaren.");
+		lblSkrivDittVeckoschema
+				.setText("Skriv ditt veckoschema om du arbetar deltid. Dagar med full tid\nanges med '8.18' som räknas om till 7.18 under sommaren.");
 		GridBagConstraints gbc_lblSkrivDittVeckoschema = new GridBagConstraints();
 		gbc_lblSkrivDittVeckoschema.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblSkrivDittVeckoschema.gridwidth = 2;
@@ -292,7 +283,7 @@ public class TidJFrame extends JFrame {
 		gbc_lblSkrivDittVeckoschema.gridx = 1;
 		gbc_lblSkrivDittVeckoschema.gridy = 0;
 		schemaPane.add(lblSkrivDittVeckoschema, gbc_lblSkrivDittVeckoschema);
-		
+
 		JLabel lblMonday = new JLabel("Måndag");
 		GridBagConstraints gbc1 = new GridBagConstraints();
 		gbc1.anchor = GridBagConstraints.WEST;
@@ -300,9 +291,10 @@ public class TidJFrame extends JFrame {
 		gbc1.gridx = 1;
 		gbc1.gridy = 1;
 		schemaPane.add(lblMonday, gbc1);
-		
+
 		mondayField = new JTextField();
-		mondayField.setToolTipText("Schemalagd arbetstid (hundradelar) Ex 8h 11m => 8.18");
+		mondayField
+				.setToolTipText("Schemalagd arbetstid (hundradelar) Ex 8h 11m => 8.18");
 		mondayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_mondayField = new GridBagConstraints();
 		gbc_mondayField.anchor = GridBagConstraints.WEST;
@@ -311,7 +303,7 @@ public class TidJFrame extends JFrame {
 		gbc_mondayField.gridy = 1;
 		schemaPane.add(mondayField, gbc_mondayField);
 		mondayField.setColumns(5);
-		
+
 		JLabel lblTuesday = new JLabel("Tisdag");
 		GridBagConstraints gbc2 = new GridBagConstraints();
 		gbc2.anchor = GridBagConstraints.WEST;
@@ -319,7 +311,7 @@ public class TidJFrame extends JFrame {
 		gbc2.gridx = 1;
 		gbc2.gridy = 2;
 		schemaPane.add(lblTuesday, gbc2);
-		
+
 		tuesdayField = new JTextField();
 		tuesdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_tuesdayField = new GridBagConstraints();
@@ -329,7 +321,7 @@ public class TidJFrame extends JFrame {
 		gbc_tuesdayField.gridy = 2;
 		schemaPane.add(tuesdayField, gbc_tuesdayField);
 		tuesdayField.setColumns(5);
-		
+
 		JLabel lblWednesday = new JLabel("Onsdag");
 		GridBagConstraints gbc3 = new GridBagConstraints();
 		gbc3.anchor = GridBagConstraints.WEST;
@@ -337,7 +329,7 @@ public class TidJFrame extends JFrame {
 		gbc3.gridx = 1;
 		gbc3.gridy = 3;
 		schemaPane.add(lblWednesday, gbc3);
-		
+
 		wednesdayField = new JTextField();
 		wednesdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_wednesdayField = new GridBagConstraints();
@@ -347,7 +339,7 @@ public class TidJFrame extends JFrame {
 		gbc_wednesdayField.gridy = 3;
 		schemaPane.add(wednesdayField, gbc_wednesdayField);
 		wednesdayField.setColumns(5);
-		
+
 		JLabel lblThursday = new JLabel("Torsdag");
 		GridBagConstraints gbc4 = new GridBagConstraints();
 		gbc4.anchor = GridBagConstraints.WEST;
@@ -355,7 +347,7 @@ public class TidJFrame extends JFrame {
 		gbc4.gridx = 1;
 		gbc4.gridy = 4;
 		schemaPane.add(lblThursday, gbc4);
-		
+
 		thursdayField = new JTextField();
 		thursdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_thursdayField = new GridBagConstraints();
@@ -365,7 +357,7 @@ public class TidJFrame extends JFrame {
 		gbc_thursdayField.gridy = 4;
 		schemaPane.add(thursdayField, gbc_thursdayField);
 		thursdayField.setColumns(5);
-		
+
 		JLabel lblFriday = new JLabel("Fredag");
 		GridBagConstraints gbc5 = new GridBagConstraints();
 		gbc5.anchor = GridBagConstraints.WEST;
@@ -373,7 +365,7 @@ public class TidJFrame extends JFrame {
 		gbc5.gridx = 1;
 		gbc5.gridy = 5;
 		schemaPane.add(lblFriday, gbc5);
-		
+
 		fridayField = new JTextField();
 		fridayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_fridayField = new GridBagConstraints();
@@ -383,7 +375,7 @@ public class TidJFrame extends JFrame {
 		gbc_fridayField.gridy = 5;
 		schemaPane.add(fridayField, gbc_fridayField);
 		fridayField.setColumns(5);
-		
+
 		JLabel lblSaturday = new JLabel("Lördag");
 		GridBagConstraints gbc6 = new GridBagConstraints();
 		gbc6.anchor = GridBagConstraints.WEST;
@@ -391,7 +383,7 @@ public class TidJFrame extends JFrame {
 		gbc6.gridx = 1;
 		gbc6.gridy = 6;
 		schemaPane.add(lblSaturday, gbc6);
-		
+
 		saturdayField = new JTextField();
 		saturdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_saturdayField = new GridBagConstraints();
@@ -401,7 +393,7 @@ public class TidJFrame extends JFrame {
 		gbc_saturdayField.gridy = 6;
 		schemaPane.add(saturdayField, gbc_saturdayField);
 		saturdayField.setColumns(5);
-		
+
 		JLabel lblSunday = new JLabel("Söndag");
 		GridBagConstraints gbc7 = new GridBagConstraints();
 		gbc7.anchor = GridBagConstraints.WEST;
@@ -409,7 +401,7 @@ public class TidJFrame extends JFrame {
 		gbc7.gridx = 1;
 		gbc7.gridy = 7;
 		schemaPane.add(lblSunday, gbc7);
-		
+
 		sundayField = new JTextField();
 		sundayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_sundayField = new GridBagConstraints();
@@ -419,18 +411,19 @@ public class TidJFrame extends JFrame {
 		gbc_sundayField.gridy = 7;
 		schemaPane.add(sundayField, gbc_sundayField);
 		sundayField.setColumns(5);
-		
+
 		JButton btnSpara = new JButton("Spara");
 		GridBagConstraints gbc_btnSpara = new GridBagConstraints();
 		gbc_btnSpara.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSpara.gridx = 1;
 		gbc_btnSpara.gridy = 8;
 		btnSpara.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// save to xml resource file
-				HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
+				HashMap<Integer, Double> schema = new HashMap<Integer, Double>(
+						7);
 				schema.put(0, Double.parseDouble(mondayField.getText()));
 				schema.put(1, Double.parseDouble(tuesdayField.getText()));
 				schema.put(2, Double.parseDouble(wednesdayField.getText()));
@@ -438,20 +431,19 @@ public class TidJFrame extends JFrame {
 				schema.put(4, Double.parseDouble(fridayField.getText()));
 				schema.put(5, Double.parseDouble(saturdayField.getText()));
 				schema.put(6, Double.parseDouble(sundayField.getText()));
-				
 
 				writeSchemaToXML(schema);
 			}
 		});
 		schemaPane.add(btnSpara, gbc_btnSpara);
-		
+
 		JButton btnterstll = new JButton("Återställ");
 		GridBagConstraints gbc_btnterstll = new GridBagConstraints();
 		gbc_btnterstll.anchor = GridBagConstraints.WEST;
 		gbc_btnterstll.gridx = 2;
 		gbc_btnterstll.gridy = 8;
 		btnterstll.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				HashMap<Integer, Double> schema = getDefaultSchema();
@@ -465,15 +457,16 @@ public class TidJFrame extends JFrame {
 			}
 		});
 		schemaPane.add(btnterstll, gbc_btnterstll);
-		
+
 		return schemaPane;
 	}
 
 	private HashMap<Integer, Double> getSchemaFromXML() {
 		HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
-		
-		String filePath = System.getProperty("user.home") + System.getProperty("file.separator") + "schema.xml";
-		
+
+		String filePath = System.getProperty("user.home")
+				+ System.getProperty("file.separator") + "schema.xml";
+
 		File file = new File(filePath);
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -483,29 +476,31 @@ public class TidJFrame extends JFrame {
 			db = dbf.newDocumentBuilder();
 			doc = db.parse(file);
 
-			NodeList list = doc.getDocumentElement().getChildNodes(); 
-			for(int i = 0, dow = 0; i < list.getLength(); i++) {
+			NodeList list = doc.getDocumentElement().getChildNodes();
+			for (int i = 0, dow = 0; i < list.getLength(); i++) {
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					schema.put(
-							new Integer(dow++), 
-							new Double(Double.parseDouble((list.item(i).getTextContent() != "") ? list.item(i).getTextContent() : "0")));
+							new Integer(dow++),
+							new Double(Double.parseDouble((list.item(i)
+									.getTextContent() != "") ? list.item(i)
+									.getTextContent() : "0")));
 				}
 			}
 			return schema;
 		} catch (Exception e) {
-			//This is ok, we use default instead...
+			// This is ok, we use default instead...
 		}
-		
+
 		return getDefaultSchema();
 	}
-	
 
 	private boolean writeSchemaToXML(HashMap<Integer, Double> schema) {
-		String filePath = System.getProperty("user.home") + System.getProperty("file.separator") + "schema.xml";
+		String filePath = System.getProperty("user.home")
+				+ System.getProperty("file.separator") + "schema.xml";
 		try {
 			String xml = buildXMLString(schema);
-			
-			PrintWriter out = new PrintWriter(new File(filePath));			
+
+			PrintWriter out = new PrintWriter(new File(filePath));
 			out.write(xml);
 			out.close();
 			return true;
@@ -519,8 +514,9 @@ public class TidJFrame extends JFrame {
 
 		return false;
 	}
-	
-	private String buildXMLString(HashMap<Integer, Double> schema) throws ParserConfigurationException, TransformerException {
+
+	private String buildXMLString(HashMap<Integer, Double> schema)
+			throws ParserConfigurationException, TransformerException {
 		Element el = null;
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -531,44 +527,44 @@ public class TidJFrame extends JFrame {
 		el = doc.createElement("monday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(0))));
 		root.appendChild(el);
-		
+
 		el = doc.createElement("tuesday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(1))));
 		root.appendChild(el);
-		
+
 		el = doc.createElement("wednesday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(2))));
 		root.appendChild(el);
-		
+
 		el = doc.createElement("thursday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(3))));
 		root.appendChild(el);
-		
+
 		el = doc.createElement("friday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(4))));
 		root.appendChild(el);
-		
+
 		el = doc.createElement("saturday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(5))));
 		root.appendChild(el);
-		
+
 		el = doc.createElement("sunday");
 		el.appendChild(doc.createTextNode(Double.toString(schema.get(6))));
 		root.appendChild(el);
-		
+
 		doc.appendChild(root);
-		
+
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t = tf.newTransformer();
-        t.setOutputProperty(OutputKeys.INDENT, "yes");
-		
+		t.setOutputProperty(OutputKeys.INDENT, "yes");
+
 		StringWriter sw = new java.io.StringWriter();
-        StreamResult sr = new StreamResult(sw);
-        t.transform(new DOMSource(doc), sr);
-        return sw.toString();
+		StreamResult sr = new StreamResult(sw);
+		t.transform(new DOMSource(doc), sr);
+		return sw.toString();
 
 	}
-	
+
 	private HashMap<Integer, Double> getDefaultSchema() {
 		HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
 		schema.put(0, 8.18d);
@@ -581,13 +577,13 @@ public class TidJFrame extends JFrame {
 		return schema;
 	}
 
-//	private GridBagConstraints createGBCForXandY(int x, int y) {
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.insets = new Insets(0, 0, 5, 5);
-//		gbc.gridx = x;
-//		gbc.gridy = y;
-//		
-//		return gbc;
-//	}
+	// private GridBagConstraints createGBCForXandY(int x, int y) {
+	// GridBagConstraints gbc = new GridBagConstraints();
+	// gbc.anchor = GridBagConstraints.WEST;
+	// gbc.insets = new Insets(0, 0, 5, 5);
+	// gbc.gridx = x;
+	// gbc.gridy = y;
+	//
+	// return gbc;
+	// }
 }
