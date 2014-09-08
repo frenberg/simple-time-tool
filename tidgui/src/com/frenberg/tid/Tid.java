@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,53 +17,51 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 public class Tid {
 	private long currentTimeMillis;
 	private long workingTimeMillis;
 	private long longestPause = 0;
 
-	public Map<String, String> calculate(String input, boolean dayBeforeHoliday, HashMap<Integer, Double> schema) {
+	public Map<String, String> calculate(String input,
+			boolean dayBeforeHoliday, HashMap<Integer, Double> schema) {
 		Calendar cal = Calendar.getInstance();
 		System.out.println(cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY);
-		System.out.println(schema.get(cal.get(Calendar.DAY_OF_WEEK)-2));
+		System.out.println(schema.get(cal.get(Calendar.DAY_OF_WEEK) - 2));
 		currentTimeMillis = cal.getTimeInMillis();
-		
+
 		int numberOfValidInputs = 0;
 		long time = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0;
 		Map<String, String> returnStrings = new HashMap<String, String>();
 
-		
 		// Calculate todays scheduled working time
 
 		// We have reduced scheduled working time during June-August (7,18h)
 		// Rest of year, ordinary schedule (8,18h)
-		// NOTE!!! -2 since Sunday => 1, Monday => 2 etc, and we have 0 based schema map.
+		// NOTE!!! -2 since Sunday => 1, Monday => 2 etc, and we have 0 based
+		// schema map.
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
-			if (schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) != 8.18) {
-				workingTimeMillis = new Double(schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) * 3600 * 1000).longValue();
+			if (schema.get(cal.get(Calendar.DAY_OF_WEEK) - 2) != 8.18) {
+				workingTimeMillis = new Double(schema.get(cal
+						.get(Calendar.DAY_OF_WEEK) - 2) * 3600 * 1000)
+						.longValue();
 			} else {
 				workingTimeMillis = 25848000; // 7.18 * 3600 * 1000
 			}
 		} else {
-			if (schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) != 8.18) {
-				workingTimeMillis = new Double(schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) * 3600 * 1000).longValue();
+			if (schema.get(cal.get(Calendar.DAY_OF_WEEK) - 2) != 8.18) {
+				workingTimeMillis = new Double(schema.get(cal
+						.get(Calendar.DAY_OF_WEEK) - 2) * 3600 * 1000)
+						.longValue();
 			} else {
 				workingTimeMillis = 29448000; // 8.18 * 3600 * 1000
 			}
 		}
-		
+
 		if (dayBeforeHoliday) {
-			workingTimeMillis -= 7200000; // two hours less if day before holiday, 2 * 3600 * 1000
+			workingTimeMillis -= 7200000; // two hours less if day before
+											// holiday, 2 * 3600 * 1000
 		}
 
-		
 		// Parse input from user/crona tid integration
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 
@@ -103,7 +100,8 @@ public class Tid {
 							"Om du varit utstämplad under mindre än 30 minuter för lunch,\nmåste du korrigera stämplingstiden och beräkna på nytt.");
 		}
 
-		// odd number of inputs => not done yet for today, calculate time to leave
+		// odd number of inputs => not done yet for today, calculate time to
+		// leave
 		if (numberOfValidInputs % 2 == 1 && numberOfValidInputs > 0) {
 
 			try {
@@ -118,8 +116,8 @@ public class Tid {
 			long date = currentTimeMillis
 					+ (workingTimeMillis - accumulatedTime);
 			if (numberOfValidInputs == 1) {
-				// Have not punched out for lunch break, 
-				// add one hour for unpaid lunch break... 
+				// Have not punched out for lunch break,
+				// add one hour for unpaid lunch break...
 				date += 3600000; // 1 * 3600 * 1000
 			}
 
@@ -148,10 +146,12 @@ public class Tid {
 			if (numberOfValidInputs == 2) {
 				accumulatedTime -= 3600000;
 			}
-			returnStrings.put("response", String.format(
-					"Summerad arbetstid: %.2f timmar (%.2fh).",
-					accumulatedTime / 3600000.0,
-					Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
+			returnStrings
+					.put("response",
+							String.format(
+									"Summerad arbetstid: %.2f timmar (%.2fh).",
+									accumulatedTime / 3600000.0,
+									Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
 		}
 
 		writeLog(String.format("%.2f", accumulatedTime / 3600000.0));
@@ -205,31 +205,5 @@ public class Tid {
 		}
 
 		return true;
-	}
-
-	private HashMap<Integer, Double> getSchemaFromXML() {
-		HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
-		URL file = getClass().getClassLoader().getResource("schema.xml");
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db;
-		try {
-			db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file.openStream());
-			NodeList list = doc.getDocumentElement().getChildNodes(); 
-			for(int i = 0, dow = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					schema.put(new Integer(dow++), new Double(Double.parseDouble(
-							(list.item(i).getTextContent() != "") ? list.item(i).getTextContent() : "0"
-							)));
-				}
-			}
-		} catch (Exception e) {
-			//silent for now, stay with default values I think...
-			return null;
-		}
-
-		
-		return schema;
 	}
 }

@@ -159,21 +159,4 @@ public class CronaCom {
 		
 		return response;
 	}
-	/**
-	 * debug method...
-	 * 
-	 * @param args
-	 * @return
-	 */
-	public static void main(String[] args) {
-		CronaCom program = new CronaCom();
-		try {
-			ArrayList<String> stamplingar = program.getTimesFromCronaTid("49", "1935");
-			for (String s : stamplingar) {
-				System.out.println(s);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
