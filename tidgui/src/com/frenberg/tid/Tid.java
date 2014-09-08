@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,33 +18,55 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 public class Tid {
 	private long currentTimeMillis;
 	private long workingTimeMillis;
 	private long longestPause = 0;
 
-	public Map<String, String> calculate(String input, boolean dayBeforeHoliday) {
-		currentTimeMillis = System.currentTimeMillis();
-
+	public Map<String, String> calculate(String input, boolean dayBeforeHoliday, HashMap<Integer, Double> schema) {
+		Calendar cal = Calendar.getInstance();
+		System.out.println(cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY);
+		System.out.println(schema.get(cal.get(Calendar.DAY_OF_WEEK)-2));
+		currentTimeMillis = cal.getTimeInMillis();
+		
 		int numberOfValidInputs = 0;
 		long time = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0;
 		Map<String, String> returnStrings = new HashMap<String, String>();
 
-		Calendar cal = Calendar.getInstance();
+		
+		// Calculate todays scheduled working time
+
+		// We have reduced scheduled working time during June-August (7,18h)
+		// Rest of year, ordinary schedule (8,18h)
+		// NOTE!!! -2 since Sunday => 1, Monday => 2 etc, and we have 0 based schema map.
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
-			// kortare arbetstid under juni-augusti (7,18)
-			workingTimeMillis = 25848000;
+			if (schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) != 8.18) {
+				workingTimeMillis = new Double(schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) * 3600 * 1000).longValue();
+			} else {
+				workingTimeMillis = 25848000; // 7.18 * 3600 * 1000
+			}
 		} else {
-			// övrig period är ordinarie arbetstid 8,18
-			workingTimeMillis = 29448000;
+			if (schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) != 8.18) {
+				workingTimeMillis = new Double(schema.get(cal.get(Calendar.DAY_OF_WEEK)-2) * 3600 * 1000).longValue();
+			} else {
+				workingTimeMillis = 29448000; // 8.18 * 3600 * 1000
+			}
 		}
 		
 		if (dayBeforeHoliday) {
-			workingTimeMillis -= 7200000; // two hours less if day before holiday
+			workingTimeMillis -= 7200000; // two hours less if day before holiday, 2 * 3600 * 1000
 		}
 
-		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
-		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+		
+		// Parse input from user/crona tid integration
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 
 		String[] lines = input.split("\r?\n|\r");
 
@@ -54,9 +77,9 @@ public class Tid {
 				numberOfValidInputs++;
 
 				try {
-					time = parser.parse(line).getTime();
+					time = simpleDateFormat.parse(line).getTime();
 				} catch (ParseException e) {
-					// ska inte hända med rätt regexp
+					// Should not be possible with correct regexp above
 					numberOfValidInputs--;
 					continue;
 				}
@@ -73,35 +96,34 @@ public class Tid {
 			}
 		}
 
-		if (longestPause > 0 && longestPause < 1800000) { // mindre än en
-															// halvtimmas lunch?
+		// We have to take at least .5h lunch break
+		if (longestPause > 0 && longestPause < 1800000) {
 			returnStrings
 					.put("warning",
 							"Om du varit utstämplad under mindre än 30 minuter för lunch,\nmåste du korrigera stämplingstiden och beräkna på nytt.");
 		}
 
-		// ojämna stämplingar så visas arbetad tid och tidpunkt för full
-		// arbetsdag
+		// odd number of inputs => not done yet for today, calculate time to leave
 		if (numberOfValidInputs % 2 == 1 && numberOfValidInputs > 0) {
 
 			try {
-				time = parser.parse(
-						formatter.format(new Date(currentTimeMillis)))
-						.getTime(); // hela minuter
+				time = simpleDateFormat.parse(
+						simpleDateFormat.format(new Date(currentTimeMillis)))
+						.getTime(); // minutes
 			} catch (ParseException e) {
-				// ska inte hända
+				// Should not be possible
 			}
 			accumulatedTime += (time - tmpTime);
 
 			long date = currentTimeMillis
 					+ (workingTimeMillis - accumulatedTime);
 			if (numberOfValidInputs == 1) {
-				// bara en stämpling, lägg på en timmes lunch
-				date += 3600000;
+				// Have not punched out for lunch break, 
+				// add one hour for unpaid lunch break... 
+				date += 3600000; // 1 * 3600 * 1000
 			}
 
-			// bara en stämpling och tid på dagen är nu efter 13 - dra av en
-			// timme för lunch
+			// Only on valid input row and current time of day is > 1pm
 			if (numberOfValidInputs == 1 && time > 43200000) {
 				accumulatedTime -= 3600000;
 			}
@@ -118,11 +140,11 @@ public class Tid {
 					.put("response",
 							String.format(
 									"Du får gå hem %s, går du hem nu har du jobbat %.2f timmar (%.2fh).",
-									formatter.format(new Date(date)),
+									simpleDateFormat.format(new Date(date)),
 									accumulatedTime / 3600000.0,
 									Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
 		} else {
-			// Summera
+			// Summarize
 			if (numberOfValidInputs == 2) {
 				accumulatedTime -= 3600000;
 			}
@@ -183,5 +205,31 @@ public class Tid {
 		}
 
 		return true;
+	}
+
+	private HashMap<Integer, Double> getSchemaFromXML() {
+		HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
+		URL file = getClass().getClassLoader().getResource("schema.xml");
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
+		try {
+			db = dbf.newDocumentBuilder();
+			Document doc = db.parse(file.openStream());
+			NodeList list = doc.getDocumentElement().getChildNodes(); 
+			for(int i = 0, dow = 0; i < list.getLength(); i++) {
+				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					schema.put(new Integer(dow++), new Double(Double.parseDouble(
+							(list.item(i).getTextContent() != "") ? list.item(i).getTextContent() : "0"
+							)));
+				}
+			}
+		} catch (Exception e) {
+			//silent for now, stay with default values I think...
+			return null;
+		}
+
+		
+		return schema;
 	}
 }
