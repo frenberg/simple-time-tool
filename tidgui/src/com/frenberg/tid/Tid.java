@@ -25,8 +25,6 @@ public class Tid {
 	public Map<String, String> calculate(String input,
 			boolean dayBeforeHoliday, HashMap<Integer, Double> schema) {
 		Calendar cal = Calendar.getInstance();
-		System.out.println(cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY);
-		System.out.println(schema.get(cal.get(Calendar.DAY_OF_WEEK) - 2));
 		currentTimeMillis = cal.getTimeInMillis();
 
 		int numberOfValidInputs = 0;
@@ -40,17 +38,17 @@ public class Tid {
 		// NOTE!!! -2 since Sunday => 1, Monday => 2 etc, and we have 0 based
 		// schema map.
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
-			if (schema.get(cal.get(Calendar.DAY_OF_WEEK) - 2) != 8.18) {
-				workingTimeMillis = new Double(schema.get(cal
-						.get(Calendar.DAY_OF_WEEK) - 2) * 3600 * 1000)
+			if (schema.get(Calendar.DAY_OF_WEEK - 1) != 8.18) {
+				workingTimeMillis = new Double(
+						schema.get(Calendar.DAY_OF_WEEK - 1) * 3600 * 1000)
 						.longValue();
 			} else {
 				workingTimeMillis = 25848000; // 7.18 * 3600 * 1000
 			}
 		} else {
-			if (schema.get(cal.get(Calendar.DAY_OF_WEEK) - 2) != 8.18) {
-				workingTimeMillis = new Double(schema.get(cal
-						.get(Calendar.DAY_OF_WEEK) - 2) * 3600 * 1000)
+			if (schema.get(Calendar.DAY_OF_WEEK - 1) != 8.18) {
+				workingTimeMillis = new Double(
+						schema.get(Calendar.DAY_OF_WEEK - 1) * 3600 * 1000)
 						.longValue();
 			} else {
 				workingTimeMillis = 29448000; // 8.18 * 3600 * 1000
