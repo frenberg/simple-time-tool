@@ -27,28 +27,25 @@ public class Tid {
 		Calendar cal = Calendar.getInstance();
 		currentTimeMillis = cal.getTimeInMillis();
 
-		int numberOfValidInputs = 0;
+		int numberOfValidInputs = 0, dayOfWeek;
 		long time = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0;
 		Map<String, String> returnStrings = new HashMap<String, String>();
 
-		// Calculate todays scheduled working time
-
-		// We have reduced scheduled working time during June-August (7,18h)
-		// Rest of year, ordinary schedule (8,18h)
-		// NOTE!!! -2 since Sunday => 1, Monday => 2 etc, and we have 0 based
-		// schema map.
+		// Calculate todays scheduled working time - We have reduced scheduled 
+		// working time during June-August (7,18h). Rest of year, ordinary schedule (8,18h)
+		dayOfWeek = cal.get( Calendar.DAY_OF_WEEK ) == 1 ? 6 :  cal.get( Calendar.DAY_OF_WEEK ) - 2;
 		if (cal.get(Calendar.MONTH) > 4 && cal.get(Calendar.MONTH) < 8) {
-			if (schema.get(Calendar.DAY_OF_WEEK - 1) != 8.18) {
+			if (schema.get(dayOfWeek) != 8.18) {
 				workingTimeMillis = new Double(
-						schema.get(Calendar.DAY_OF_WEEK - 1) * 3600 * 1000)
+						schema.get(dayOfWeek) * 3600 * 1000)
 						.longValue();
 			} else {
 				workingTimeMillis = 25848000; // 7.18 * 3600 * 1000
 			}
 		} else {
-			if (schema.get(Calendar.DAY_OF_WEEK - 1) != 8.18) {
+			if (schema.get(dayOfWeek) != 8.18) {
 				workingTimeMillis = new Double(
-						schema.get(Calendar.DAY_OF_WEEK - 1) * 3600 * 1000)
+						schema.get(dayOfWeek) * 3600 * 1000)
 						.longValue();
 			} else {
 				workingTimeMillis = 29448000; // 8.18 * 3600 * 1000
