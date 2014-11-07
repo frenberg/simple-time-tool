@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="lib" path="/Users/frenberg/source code/java/simple-time-tool/tidgui/lib/JCarrierPigeon-1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/frenberg/source code/java/simple-time-tool/tidgui/lib/jcommon-1.0.17.jar"/>
-	<classpathentry kind="lib" path="/Users/frenberg/source code/java/simple-time-tool/tidgui/lib/jsoup-1.7.2.jar"/>
-	<classpathentry kind="lib" path="/Users/frenberg/source code/java/simple-time-tool/tidgui/lib/JTelegraph-1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/frenberg/source code/java/simple-time-tool/tidgui/lib/timingframework-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/flux/programs/simple-time-tool/tidgui/lib/JCarrierPigeon-1.3.jar"/>
+	<classpathentry kind="lib" path="/home/flux/programs/simple-time-tool/tidgui/lib/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="/home/flux/programs/simple-time-tool/tidgui/lib/jsoup-1.7.3.jar"/>
+	<classpathentry kind="lib" path="/home/flux/programs/simple-time-tool/tidgui/lib/JTelegraph-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/flux/programs/simple-time-tool/tidgui/lib/timingframework-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

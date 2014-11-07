@@ -146,7 +146,7 @@ public class TidJFrame extends JFrame {
 
 		GridBagConstraints fetchButtonGBLayout = new GridBagConstraints();
 		fetchButtonGBLayout.insets = new Insets(0, 0, 5, 0);
-		fetchButtonGBLayout.anchor = GridBagConstraints.NORTHWEST;
+		fetchButtonGBLayout.anchor = GridBagConstraints.NORTHEAST;
 		fetchButtonGBLayout.gridx = 2;
 		fetchButtonGBLayout.gridy = 1;
 		btnFetch.addActionListener(new ActionListener() {
@@ -264,29 +264,29 @@ public class TidJFrame extends JFrame {
 		schemaPane.setBackground(Color.WHITE);
 		GridBagLayout layout = new GridBagLayout();
 		layout.columnWidths = new int[] { 30, 67, 454, 0, 0 };
-		layout.rowHeights = new int[] { 42, 0, 0, 0, 0, 0, 0, 0, 0 };
+		layout.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		layout.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
-		layout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0 };
+		layout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0 };
 
 		schemaPane.setLayout(layout);
-
-		JTextPane lblSkrivDittVeckoschema = new JTextPane();
-		lblSkrivDittVeckoschema.setEditable(false);
-		lblSkrivDittVeckoschema
-				.setText("Skriv ditt veckoschema om du arbetar deltid. Dagar med full tid\nanges med '8.18' som räknas om till 7.18 under sommaren.");
-		GridBagConstraints gbc_lblSkrivDittVeckoschema = new GridBagConstraints();
-		gbc_lblSkrivDittVeckoschema.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblSkrivDittVeckoschema.gridwidth = 2;
-		gbc_lblSkrivDittVeckoschema.anchor = GridBagConstraints.NORTH;
-		gbc_lblSkrivDittVeckoschema.insets = new Insets(0, 0, 5, 0);
-		gbc_lblSkrivDittVeckoschema.gridx = 1;
-		gbc_lblSkrivDittVeckoschema.gridy = 0;
-		schemaPane.add(lblSkrivDittVeckoschema, gbc_lblSkrivDittVeckoschema);
+		
+				JTextPane lblSkrivDittVeckoschema = new JTextPane();
+				lblSkrivDittVeckoschema.setEditable(false);
+				lblSkrivDittVeckoschema
+						.setText("Skriv ditt veckoschema om du arbetar deltid. Dagar med full tid\nanges med '8.18' som räknas om till 7.18 under sommaren.");
+				GridBagConstraints gbc_lblSkrivDittVeckoschema = new GridBagConstraints();
+				gbc_lblSkrivDittVeckoschema.anchor = GridBagConstraints.NORTH;
+				gbc_lblSkrivDittVeckoschema.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblSkrivDittVeckoschema.gridwidth = 3;
+				gbc_lblSkrivDittVeckoschema.insets = new Insets(0, 0, 5, 5);
+				gbc_lblSkrivDittVeckoschema.gridx = 1;
+				gbc_lblSkrivDittVeckoschema.gridy = 0;
+				schemaPane.add(lblSkrivDittVeckoschema, gbc_lblSkrivDittVeckoschema);
 
 		JLabel lblMonday = new JLabel("Måndag");
 		GridBagConstraints gbc1 = new GridBagConstraints();
-		gbc1.anchor = GridBagConstraints.WEST;
+		gbc1.anchor = GridBagConstraints.EAST;
 		gbc1.insets = new Insets(0, 0, 5, 5);
 		gbc1.gridx = 1;
 		gbc1.gridy = 1;
@@ -298,7 +298,7 @@ public class TidJFrame extends JFrame {
 		mondayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_mondayField = new GridBagConstraints();
 		gbc_mondayField.anchor = GridBagConstraints.WEST;
-		gbc_mondayField.insets = new Insets(0, 0, 5, 0);
+		gbc_mondayField.insets = new Insets(0, 0, 5, 5);
 		gbc_mondayField.gridx = 2;
 		gbc_mondayField.gridy = 1;
 		schemaPane.add(mondayField, gbc_mondayField);
@@ -306,7 +306,7 @@ public class TidJFrame extends JFrame {
 
 		JLabel lblTuesday = new JLabel("Tisdag");
 		GridBagConstraints gbc2 = new GridBagConstraints();
-		gbc2.anchor = GridBagConstraints.WEST;
+		gbc2.anchor = GridBagConstraints.EAST;
 		gbc2.insets = new Insets(0, 0, 5, 5);
 		gbc2.gridx = 1;
 		gbc2.gridy = 2;
@@ -316,7 +316,7 @@ public class TidJFrame extends JFrame {
 		tuesdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_tuesdayField = new GridBagConstraints();
 		gbc_tuesdayField.anchor = GridBagConstraints.WEST;
-		gbc_tuesdayField.insets = new Insets(0, 0, 5, 0);
+		gbc_tuesdayField.insets = new Insets(0, 0, 5, 5);
 		gbc_tuesdayField.gridx = 2;
 		gbc_tuesdayField.gridy = 2;
 		schemaPane.add(tuesdayField, gbc_tuesdayField);
@@ -324,7 +324,7 @@ public class TidJFrame extends JFrame {
 
 		JLabel lblWednesday = new JLabel("Onsdag");
 		GridBagConstraints gbc3 = new GridBagConstraints();
-		gbc3.anchor = GridBagConstraints.WEST;
+		gbc3.anchor = GridBagConstraints.EAST;
 		gbc3.insets = new Insets(0, 0, 5, 5);
 		gbc3.gridx = 1;
 		gbc3.gridy = 3;
@@ -334,7 +334,7 @@ public class TidJFrame extends JFrame {
 		wednesdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_wednesdayField = new GridBagConstraints();
 		gbc_wednesdayField.anchor = GridBagConstraints.WEST;
-		gbc_wednesdayField.insets = new Insets(0, 0, 5, 0);
+		gbc_wednesdayField.insets = new Insets(0, 0, 5, 5);
 		gbc_wednesdayField.gridx = 2;
 		gbc_wednesdayField.gridy = 3;
 		schemaPane.add(wednesdayField, gbc_wednesdayField);
@@ -342,7 +342,7 @@ public class TidJFrame extends JFrame {
 
 		JLabel lblThursday = new JLabel("Torsdag");
 		GridBagConstraints gbc4 = new GridBagConstraints();
-		gbc4.anchor = GridBagConstraints.WEST;
+		gbc4.anchor = GridBagConstraints.EAST;
 		gbc4.insets = new Insets(0, 0, 5, 5);
 		gbc4.gridx = 1;
 		gbc4.gridy = 4;
@@ -352,7 +352,7 @@ public class TidJFrame extends JFrame {
 		thursdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_thursdayField = new GridBagConstraints();
 		gbc_thursdayField.anchor = GridBagConstraints.WEST;
-		gbc_thursdayField.insets = new Insets(0, 0, 5, 0);
+		gbc_thursdayField.insets = new Insets(0, 0, 5, 5);
 		gbc_thursdayField.gridx = 2;
 		gbc_thursdayField.gridy = 4;
 		schemaPane.add(thursdayField, gbc_thursdayField);
@@ -360,7 +360,7 @@ public class TidJFrame extends JFrame {
 
 		JLabel lblFriday = new JLabel("Fredag");
 		GridBagConstraints gbc5 = new GridBagConstraints();
-		gbc5.anchor = GridBagConstraints.WEST;
+		gbc5.anchor = GridBagConstraints.EAST;
 		gbc5.insets = new Insets(0, 0, 5, 5);
 		gbc5.gridx = 1;
 		gbc5.gridy = 5;
@@ -370,7 +370,7 @@ public class TidJFrame extends JFrame {
 		fridayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_fridayField = new GridBagConstraints();
 		gbc_fridayField.anchor = GridBagConstraints.WEST;
-		gbc_fridayField.insets = new Insets(0, 0, 5, 0);
+		gbc_fridayField.insets = new Insets(0, 0, 5, 5);
 		gbc_fridayField.gridx = 2;
 		gbc_fridayField.gridy = 5;
 		schemaPane.add(fridayField, gbc_fridayField);
@@ -378,7 +378,7 @@ public class TidJFrame extends JFrame {
 
 		JLabel lblSaturday = new JLabel("Lördag");
 		GridBagConstraints gbc6 = new GridBagConstraints();
-		gbc6.anchor = GridBagConstraints.WEST;
+		gbc6.anchor = GridBagConstraints.EAST;
 		gbc6.insets = new Insets(0, 0, 5, 5);
 		gbc6.gridx = 1;
 		gbc6.gridy = 6;
@@ -388,7 +388,7 @@ public class TidJFrame extends JFrame {
 		saturdayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_saturdayField = new GridBagConstraints();
 		gbc_saturdayField.anchor = GridBagConstraints.WEST;
-		gbc_saturdayField.insets = new Insets(0, 0, 5, 0);
+		gbc_saturdayField.insets = new Insets(0, 0, 5, 5);
 		gbc_saturdayField.gridx = 2;
 		gbc_saturdayField.gridy = 6;
 		schemaPane.add(saturdayField, gbc_saturdayField);
@@ -396,7 +396,7 @@ public class TidJFrame extends JFrame {
 
 		JLabel lblSunday = new JLabel("Söndag");
 		GridBagConstraints gbc7 = new GridBagConstraints();
-		gbc7.anchor = GridBagConstraints.WEST;
+		gbc7.anchor = GridBagConstraints.EAST;
 		gbc7.insets = new Insets(0, 0, 5, 5);
 		gbc7.gridx = 1;
 		gbc7.gridy = 7;
@@ -405,7 +405,7 @@ public class TidJFrame extends JFrame {
 		sundayField = new JTextField();
 		sundayField.setInputVerifier(new SchemaInputVerifier());
 		GridBagConstraints gbc_sundayField = new GridBagConstraints();
-		gbc_sundayField.insets = new Insets(0, 0, 5, 0);
+		gbc_sundayField.insets = new Insets(0, 0, 5, 5);
 		gbc_sundayField.anchor = GridBagConstraints.WEST;
 		gbc_sundayField.gridx = 2;
 		gbc_sundayField.gridy = 7;
@@ -414,7 +414,7 @@ public class TidJFrame extends JFrame {
 
 		JButton btnSpara = new JButton("Spara");
 		GridBagConstraints gbc_btnSpara = new GridBagConstraints();
-		gbc_btnSpara.insets = new Insets(0, 0, 0, 5);
+		gbc_btnSpara.insets = new Insets(0, 0, 5, 5);
 		gbc_btnSpara.gridx = 1;
 		gbc_btnSpara.gridy = 8;
 		btnSpara.addActionListener(new ActionListener() {
@@ -439,6 +439,7 @@ public class TidJFrame extends JFrame {
 
 		JButton btnterstll = new JButton("Återställ");
 		GridBagConstraints gbc_btnterstll = new GridBagConstraints();
+		gbc_btnterstll.insets = new Insets(0, 0, 5, 5);
 		gbc_btnterstll.anchor = GridBagConstraints.WEST;
 		gbc_btnterstll.gridx = 2;
 		gbc_btnterstll.gridy = 8;
