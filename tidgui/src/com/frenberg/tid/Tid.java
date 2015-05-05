@@ -29,7 +29,7 @@ public class Tid {
 
 		int numberOfValidInputs = 0, dayOfWeek;
 		long time = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0;
-		Map<String, String> returnStrings = new HashMap<String, String>();
+		Map<String, String> returnStrings = new HashMap<>();
 
 		// Calculate todays scheduled working time - We have reduced scheduled 
 		// working time during June-August (7,18h). Rest of year, ordinary schedule (8,18h)
@@ -53,8 +53,7 @@ public class Tid {
 		}
 
 		if (dayBeforeHoliday) {
-			workingTimeMillis -= 7200000; // two hours less if day before
-											// holiday, 2 * 3600 * 1000
+			workingTimeMillis -= 21600000; // Day before holiday, 6 * 3600 * 1000
 		}
 
 		// Parse input from user/crona tid integration
@@ -155,7 +154,7 @@ public class Tid {
 
 	private boolean writeLog(String time) {
 		String fileRow;
-		ArrayList<String> fileContentRows = new ArrayList<String>();
+		ArrayList<String> fileContentRows = new ArrayList<>();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String today = formatter.format(new Date(this.currentTimeMillis));
 
