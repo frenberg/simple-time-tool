@@ -1,11 +1,8 @@
 package com.frenberg.tid;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static java.awt.Color.WHITE;
+
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,18 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,7 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class TidJFrame extends JFrame {
+class TidJFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private final JButton btnCalculate = new JButton("Beräkna");
@@ -66,17 +52,18 @@ public class TidJFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TidJFrame(String title) {
+	TidJFrame(String title) {
 		super(title);
-		setBackground(Color.WHITE);
+		setBackground(WHITE);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//noinspection MagicConstant
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 590, 380);
 		setResizable(false);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.setBorder(null);
-		tabbedPane.setBackground(Color.WHITE);
+		tabbedPane.setBackground(WHITE);
 
 		JPanel contentPane = setupMainContentPane();
 		JPanel schemaPane = setupSchemaContentPane();
@@ -98,7 +85,7 @@ public class TidJFrame extends JFrame {
 
 	private JPanel setupMainContentPane() {
 		JPanel contentPane = new JPanel();
-		contentPane.setBackground(Color.WHITE);
+		contentPane.setBackground(WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		GridBagLayout contentPaneGBLayout = new GridBagLayout();
@@ -149,24 +136,21 @@ public class TidJFrame extends JFrame {
 		fetchButtonGBLayout.anchor = GridBagConstraints.NORTHWEST;
 		fetchButtonGBLayout.gridx = 2;
 		fetchButtonGBLayout.gridy = 1;
-		btnFetch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ArrayList<String> stamplingar = null;
-				CronaCom con = new CronaCom();
-				try {
-					stamplingar = con.getTimesFromCronaTid(kortnr.getText(),
-							new String(pin.getPassword()));
-				} catch (Exception x) {
-					x.printStackTrace();
+		btnFetch.addActionListener(e -> {
+			ArrayList<String> stamplingar = null;
+			CronaCom con = new CronaCom();
+			try {
+				stamplingar = con.getTimesFromCronaTid(kortnr.getText(),
+						new String(pin.getPassword()));
+			} catch (Exception x) {
+				x.printStackTrace();
+			}
+			if (stamplingar != null) {
+				String newtimes = "";
+				for (String stampling : stamplingar) {
+					newtimes += stampling + "\n";
 				}
-				if (stamplingar != null) {
-					String newtimes = new String();
-					for (String stampling : stamplingar) {
-						// newtimes.concat(stampling + "\n");
-						newtimes += stampling + "\n";
-					}
-					txtTimes.setText(newtimes);
-				}
+				txtTimes.setText(newtimes);
 			}
 		});
 		contentPane.add(btnFetch, fetchButtonGBLayout);
@@ -204,33 +188,33 @@ public class TidJFrame extends JFrame {
 		btnCalculateGBLayout.insets = new Insets(0, 0, 5, 5);
 		btnCalculateGBLayout.gridx = 0;
 		btnCalculateGBLayout.gridy = 4;
-		btnCalculate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				HashMap<Integer, Double> schema = getSchemaFromXML();
-				Map<String, String> response = new Tid().calculate(
-						txtTimes.getText(), chkDayBeforeHoliday.isSelected(),
-						schema);
-				txtResultPane.setText(response.get("response"));
-				if (response.get("warning") != null) {
-					JOptionPane.showMessageDialog(null,
-							response.get("warning"), "Kontrollera",
-							JOptionPane.WARNING_MESSAGE);
-				}
+		btnCalculate.addActionListener(e -> {
+			HashMap<Integer, Double> schema = getSchemaFromXML();
+			Map<String, String> response = new Tid().calculate(
+					txtTimes.getText(), chkDayBeforeHoliday.isSelected(),
+					schema);
+			txtResultPane.setText(response.get("response"));
+			if (response.get("warning") != null) {
+				JOptionPane.showMessageDialog(null,
+						response.get("warning"), "Kontrollera",
+						JOptionPane.WARNING_MESSAGE);
+			}
 
-				// Hämta timern, rensa befintliga notifieringar
-				if (timer != null) {
-					timer.cancel();
-					timer.purge();
-				}
+			// Hämta timern, rensa befintliga notifieringar
+			if (timer != null) {
+				timer.cancel();
+			}
 
-				if (response.get("notificationTime") != null) {
-					long date = Long.parseLong(response.get("notificationTime"));
+			if (response.get("notificationTime") != null) {
+				long date = Long.parseLong(response.get("notificationTime"));
 
-					// Skapa ny och schemalägg
-					timer = new Timer(true);
-					NotificationTimerTask tt = new NotificationTimerTask();
-					timer.schedule(tt, new Date(date));
-				}
+				// Skapa ny och schemalägg
+				timer = new Timer(true);
+				NotificationTimerTask tt = new NotificationTimerTask();
+				timer.schedule(tt, new Date(date));
+			} else {
+				timer.cancel();
+				timer = null;
 			}
 		});
 		contentPane.add(btnCalculate, btnCalculateGBLayout);
@@ -247,7 +231,7 @@ public class TidJFrame extends JFrame {
 		contentPane.add(txtResultPane, txtResultPaneGBLayout);
 
 		chkDayBeforeHoliday = new JCheckBox("Dag före röd dag");
-		chkDayBeforeHoliday.setBackground(Color.WHITE);
+		chkDayBeforeHoliday.setBackground(WHITE);
 		GridBagConstraints chkDayBeforeHolidayGBLayout = new GridBagConstraints();
 		chkDayBeforeHolidayGBLayout.anchor = GridBagConstraints.WEST;
 		chkDayBeforeHolidayGBLayout.gridwidth = 2;
@@ -261,7 +245,7 @@ public class TidJFrame extends JFrame {
 
 	private JPanel setupSchemaContentPane() {
 		JPanel schemaPane = new JPanel();
-		schemaPane.setBackground(Color.WHITE);
+		schemaPane.setBackground(WHITE);
 		GridBagLayout layout = new GridBagLayout();
 		layout.columnWidths = new int[] { 30, 67, 454, 0, 0 };
 		layout.rowHeights = new int[] { 42, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -417,23 +401,18 @@ public class TidJFrame extends JFrame {
 		gbc_btnSpara.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSpara.gridx = 1;
 		gbc_btnSpara.gridy = 8;
-		btnSpara.addActionListener(new ActionListener() {
+		btnSpara.addActionListener(e -> {
+			// save to xml resource file
+			HashMap<Integer, Double> schema = new HashMap<>(7);
+			schema.put(0, Double.parseDouble(mondayField.getText()));
+			schema.put(1, Double.parseDouble(tuesdayField.getText()));
+			schema.put(2, Double.parseDouble(wednesdayField.getText()));
+			schema.put(3, Double.parseDouble(thursdayField.getText()));
+			schema.put(4, Double.parseDouble(fridayField.getText()));
+			schema.put(5, Double.parseDouble(saturdayField.getText()));
+			schema.put(6, Double.parseDouble(sundayField.getText()));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// save to xml resource file
-				HashMap<Integer, Double> schema = new HashMap<Integer, Double>(
-						7);
-				schema.put(0, Double.parseDouble(mondayField.getText()));
-				schema.put(1, Double.parseDouble(tuesdayField.getText()));
-				schema.put(2, Double.parseDouble(wednesdayField.getText()));
-				schema.put(3, Double.parseDouble(thursdayField.getText()));
-				schema.put(4, Double.parseDouble(fridayField.getText()));
-				schema.put(5, Double.parseDouble(saturdayField.getText()));
-				schema.put(6, Double.parseDouble(sundayField.getText()));
-
-				writeSchemaToXML(schema);
-			}
+			writeSchemaToXML(schema);
 		});
 		schemaPane.add(btnSpara, gbc_btnSpara);
 
@@ -442,19 +421,15 @@ public class TidJFrame extends JFrame {
 		gbc_btnterstll.anchor = GridBagConstraints.WEST;
 		gbc_btnterstll.gridx = 2;
 		gbc_btnterstll.gridy = 8;
-		btnterstll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				HashMap<Integer, Double> schema = getDefaultSchema();
-				mondayField.setText(Double.toString(schema.get(0)));
-				tuesdayField.setText(Double.toString(schema.get(1)));
-				wednesdayField.setText(Double.toString(schema.get(2)));
-				thursdayField.setText(Double.toString(schema.get(3)));
-				fridayField.setText(Double.toString(schema.get(4)));
-				saturdayField.setText(Double.toString(schema.get(5)));
-				sundayField.setText(Double.toString(schema.get(6)));
-			}
+		btnterstll.addActionListener(e -> {
+			HashMap<Integer, Double> schema = getDefaultSchema();
+			mondayField.setText(Double.toString(schema.get(0)));
+			tuesdayField.setText(Double.toString(schema.get(1)));
+			wednesdayField.setText(Double.toString(schema.get(2)));
+			thursdayField.setText(Double.toString(schema.get(3)));
+			fridayField.setText(Double.toString(schema.get(4)));
+			saturdayField.setText(Double.toString(schema.get(5)));
+			sundayField.setText(Double.toString(schema.get(6)));
 		});
 		schemaPane.add(btnterstll, gbc_btnterstll);
 
@@ -462,7 +437,7 @@ public class TidJFrame extends JFrame {
 	}
 
 	private HashMap<Integer, Double> getSchemaFromXML() {
-		HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
+		HashMap<Integer, Double> schema = new HashMap<>(7);
 
 		String filePath = System.getProperty("user.home")
 				+ System.getProperty("file.separator") + "schema.xml";
@@ -479,19 +454,16 @@ public class TidJFrame extends JFrame {
 			NodeList list = doc.getDocumentElement().getChildNodes();
 			for (int i = 0, dow = 0; i < list.getLength(); i++) {
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					schema.put(
-							new Integer(dow++),
-							new Double(Double.parseDouble((list.item(i)
-									.getTextContent() != "") ? list.item(i)
-									.getTextContent() : "0")));
+					schema.put(dow++,
+							Double.parseDouble((list.item(i).getTextContent().isEmpty()) ? "0" :
+											   list.item(i).getTextContent()));
 				}
 			}
 			return schema;
 		} catch (Exception e) {
 			// This is ok, we use default instead...
+			return getDefaultSchema();
 		}
-
-		return getDefaultSchema();
 	}
 
 	private boolean writeSchemaToXML(HashMap<Integer, Double> schema) {
@@ -504,11 +476,7 @@ public class TidJFrame extends JFrame {
 			out.write(xml);
 			out.close();
 			return true;
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ParserConfigurationException | TransformerException | IOException e) {
 			e.printStackTrace();
 		}
 
@@ -517,7 +485,7 @@ public class TidJFrame extends JFrame {
 
 	private String buildXMLString(HashMap<Integer, Double> schema)
 			throws ParserConfigurationException, TransformerException {
-		Element el = null;
+		Element el;
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -566,7 +534,7 @@ public class TidJFrame extends JFrame {
 	}
 
 	private HashMap<Integer, Double> getDefaultSchema() {
-		HashMap<Integer, Double> schema = new HashMap<Integer, Double>(7);
+		HashMap<Integer, Double> schema = new HashMap<>(7);
 		schema.put(0, 8.18d);
 		schema.put(1, 8.18d);
 		schema.put(2, 8.18d);
@@ -577,13 +545,4 @@ public class TidJFrame extends JFrame {
 		return schema;
 	}
 
-	// private GridBagConstraints createGBCForXandY(int x, int y) {
-	// GridBagConstraints gbc = new GridBagConstraints();
-	// gbc.anchor = GridBagConstraints.WEST;
-	// gbc.insets = new Insets(0, 0, 5, 5);
-	// gbc.gridx = x;
-	// gbc.gridy = y;
-	//
-	// return gbc;
-	// }
 }
