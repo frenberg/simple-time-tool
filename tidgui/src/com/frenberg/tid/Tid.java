@@ -53,7 +53,7 @@ public class Tid {
 		}
 
 		if (dayBeforeHoliday) {
-			workingTimeMillis -= 21600000; // Day before holiday, 6 * 3600 * 1000
+			workingTimeMillis = 21600000; // Day before holiday, 6 * 3600 * 1000
 		}
 
 		// Parse input from user/crona tid integration
