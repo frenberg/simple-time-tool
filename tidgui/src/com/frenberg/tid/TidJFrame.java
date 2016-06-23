@@ -212,7 +212,7 @@ class TidJFrame extends JFrame {
 				timer = new Timer(true);
 				NotificationTimerTask tt = new NotificationTimerTask();
 				timer.schedule(tt, new Date(date));
-			} else {
+			} else if (timer != null) {
 				timer.cancel();
 				timer = null;
 			}
