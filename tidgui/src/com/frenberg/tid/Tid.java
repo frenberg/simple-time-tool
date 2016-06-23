@@ -123,7 +123,7 @@ class Tid {
 	private long getScheduledWorkingTimeInMillis(boolean dayBeforeHoliday,
 			HashMap<Integer, Double> schema, Calendar cal) {
 		if (dayBeforeHoliday) {
-			return 21600000; // Day before holiday, 6 * 3600 * 1000
+			return 22260000; // Day before holiday, (6 * 3600 * 1000) + 660000
 		}
 		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 6 :
 						cal.get(Calendar.DAY_OF_WEEK) - 2;
@@ -131,13 +131,13 @@ class Tid {
 			if (schema.get(dayOfWeek) != 8.18) {
 				return new Double(schema.get(dayOfWeek) * 3600 * 1000).longValue();
 			} else {
-				return 25848000; // 7.18 * 3600 * 1000
+				return 25860000; // (7 * 3600 * 1000) + 660000
 			}
 		} else {
 			if (schema.get(dayOfWeek) != 8.18) {
 				return new Double(schema.get(dayOfWeek) * 3600 * 1000).longValue();
 			} else {
-				return 29448000; // 8.18 * 3600 * 1000
+				return 29460000; // (8 * 3600 * 1000) + 660000
 			}
 		}
 	}
