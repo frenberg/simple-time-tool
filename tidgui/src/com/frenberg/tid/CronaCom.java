@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
  */
 public class CronaCom {
 
+	private static final String DOMAIN = "https://tid.fnox.se";
 	protected String cookie = null;
 	protected String sid = null;
 	protected String kortnr = null;
@@ -75,7 +76,7 @@ public class CronaCom {
 				+ URLEncoder.encode(pin, "UTF-8") + "&frm_forw="
 				+ URLEncoder.encode("Logga in", "UTF-8");
 
-		HttpURLConnection con = (HttpURLConnection) new URL("http://tid.fortnox.local/")
+		HttpURLConnection con = (HttpURLConnection) new URL(DOMAIN + "/")
 				.openConnection();
 		con.setInstanceFollowRedirects(false);
 		con.setDoInput(true);
@@ -109,7 +110,7 @@ public class CronaCom {
 
 		Long timestamp = (Long)System.currentTimeMillis() / 1000; // milliseconds to seconds
 
-		URL url = new URL("http://tid.fortnox.local/webbtidur/?cmd=getstamplistxml&kortnr="
+		URL url = new URL(DOMAIN + "/webbtidur/?cmd=getstamplistxml&kortnr="
 				+ this.kortnr + "&sid=" + this.sid + "&uid=" + timestamp.toString());
 		
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
