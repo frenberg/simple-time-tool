@@ -78,6 +78,7 @@ class Tid {
 			accumulatedTime += (time - tmpTime);
 			// Only one valid input row and current time of day is > 1pm
 			if (numberOfValidInputs == 1 && time > 43200000) {
+				// remove one hour for unpaid lunch break...
 				accumulatedTime -= 3600000;
 			}
 
@@ -86,12 +87,6 @@ class Tid {
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 			timeToLeaveInMillis = cal.getTimeInMillis();
-
-			if (numberOfValidInputs == 1) {
-				// Have not punched out for lunch break,
-				// add one hour for unpaid lunch break...
-				timeToLeaveInMillis += 3600000; // 1 * 3600 * 1000
-			}
 
 			returnStrings.put("notificationTime", Long.toString(timeToLeaveInMillis));
 			returnStrings.put("response",
