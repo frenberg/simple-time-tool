@@ -83,6 +83,12 @@ class Tid {
 			}
 
 			long timeToLeaveInMillis = currentTimeMillis + (workingTimeMillis - accumulatedTime);
+			// Only one valid input row and current time of day is < 1pm
+			if (numberOfValidInputs == 1 && time < 43200000) {
+				// add one hour for unpaid lunch break...
+				timeToLeaveInMillis += 3600000;
+			}
+
 			cal.setTime(new Date(timeToLeaveInMillis));
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
