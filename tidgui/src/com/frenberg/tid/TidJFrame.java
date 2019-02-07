@@ -58,7 +58,7 @@ class TidJFrame extends JFrame {
 
 		//noinspection MagicConstant
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setBounds(100, 100, 590, 380);
+		setBounds(100, 100, 590, 340);
 		setResizable(false);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -97,63 +97,63 @@ class TidJFrame extends JFrame {
 				1.0, 0.0, Double.MIN_VALUE };
 		contentPane.setLayout(contentPaneGBLayout);
 
-		JLabel lblKortnr = new JLabel("Anställningsnr");
-		GridBagConstraints lblKortnrGBLayout = new GridBagConstraints();
-		lblKortnrGBLayout.anchor = GridBagConstraints.NORTHWEST;
-		lblKortnrGBLayout.insets = new Insets(0, 0, 5, 5);
-		lblKortnrGBLayout.gridx = 0;
-		lblKortnrGBLayout.gridy = 0;
-		contentPane.add(lblKortnr, lblKortnrGBLayout);
-
-		JLabel lblPinkod = new JLabel("Pinkod");
-		GridBagConstraints lblPinkodGBLayout = new GridBagConstraints();
-		lblPinkodGBLayout.anchor = GridBagConstraints.NORTHWEST;
-		lblPinkodGBLayout.insets = new Insets(0, 0, 5, 5);
-		lblPinkodGBLayout.gridx = 1;
-		lblPinkodGBLayout.gridy = 0;
-		contentPane.add(lblPinkod, lblPinkodGBLayout);
-
-		kortnr = new JTextField();
-		GridBagConstraints kortnrGBLayout = new GridBagConstraints();
-		kortnrGBLayout.anchor = GridBagConstraints.WEST;
-		kortnrGBLayout.insets = new Insets(0, 0, 5, 5);
-		kortnrGBLayout.gridx = 0;
-		kortnrGBLayout.gridy = 1;
-		contentPane.add(kortnr, kortnrGBLayout);
-		kortnr.setColumns(3);
-
-		pin = new JPasswordField();
-		GridBagConstraints pinGBLayout = new GridBagConstraints();
-		pinGBLayout.anchor = GridBagConstraints.WEST;
-		pinGBLayout.insets = new Insets(0, 0, 5, 5);
-		pinGBLayout.gridx = 1;
-		pinGBLayout.gridy = 1;
-		contentPane.add(pin, pinGBLayout);
-		pin.setColumns(4);
-
-		GridBagConstraints fetchButtonGBLayout = new GridBagConstraints();
-		fetchButtonGBLayout.insets = new Insets(0, 0, 5, 0);
-		fetchButtonGBLayout.anchor = GridBagConstraints.NORTHWEST;
-		fetchButtonGBLayout.gridx = 2;
-		fetchButtonGBLayout.gridy = 1;
-		btnFetch.addActionListener(e -> {
-			ArrayList<String> stamplingar = null;
-			CronaCom con = new CronaCom();
-			try {
-				stamplingar = con.getTimesFromCronaTid(kortnr.getText(),
-						new String(pin.getPassword()));
-			} catch (Exception x) {
-				x.printStackTrace();
-			}
-			if (stamplingar != null) {
-				String newtimes = "";
-				for (String stampling : stamplingar) {
-					newtimes += stampling + "\n";
-				}
-				txtTimes.setText(newtimes);
-			}
-		});
-		contentPane.add(btnFetch, fetchButtonGBLayout);
+//		JLabel lblKortnr = new JLabel("Anställningsnr");
+//		GridBagConstraints lblKortnrGBLayout = new GridBagConstraints();
+//		lblKortnrGBLayout.anchor = GridBagConstraints.NORTHWEST;
+//		lblKortnrGBLayout.insets = new Insets(0, 0, 5, 5);
+//		lblKortnrGBLayout.gridx = 0;
+//		lblKortnrGBLayout.gridy = 0;
+//		contentPane.add(lblKortnr, lblKortnrGBLayout);
+//
+//		JLabel lblPinkod = new JLabel("Pinkod");
+//		GridBagConstraints lblPinkodGBLayout = new GridBagConstraints();
+//		lblPinkodGBLayout.anchor = GridBagConstraints.NORTHWEST;
+//		lblPinkodGBLayout.insets = new Insets(0, 0, 5, 5);
+//		lblPinkodGBLayout.gridx = 1;
+//		lblPinkodGBLayout.gridy = 0;
+//		contentPane.add(lblPinkod, lblPinkodGBLayout);
+//
+//		kortnr = new JTextField();
+//		GridBagConstraints kortnrGBLayout = new GridBagConstraints();
+//		kortnrGBLayout.anchor = GridBagConstraints.WEST;
+//		kortnrGBLayout.insets = new Insets(0, 0, 5, 5);
+//		kortnrGBLayout.gridx = 0;
+//		kortnrGBLayout.gridy = 1;
+//		contentPane.add(kortnr, kortnrGBLayout);
+//		kortnr.setColumns(3);
+//
+//		pin = new JPasswordField();
+//		GridBagConstraints pinGBLayout = new GridBagConstraints();
+//		pinGBLayout.anchor = GridBagConstraints.WEST;
+//		pinGBLayout.insets = new Insets(0, 0, 5, 5);
+//		pinGBLayout.gridx = 1;
+//		pinGBLayout.gridy = 1;
+//		contentPane.add(pin, pinGBLayout);
+//		pin.setColumns(4);
+//
+//		GridBagConstraints fetchButtonGBLayout = new GridBagConstraints();
+//		fetchButtonGBLayout.insets = new Insets(0, 0, 5, 0);
+//		fetchButtonGBLayout.anchor = GridBagConstraints.NORTHWEST;
+//		fetchButtonGBLayout.gridx = 2;
+//		fetchButtonGBLayout.gridy = 1;
+//		btnFetch.addActionListener(e -> {
+//			ArrayList<String> stamplingar = null;
+//			CronaCom con = new CronaCom();
+//			try {
+//				stamplingar = con.getTimesFromCronaTid(kortnr.getText(),
+//						new String(pin.getPassword()));
+//			} catch (Exception x) {
+//				x.printStackTrace();
+//			}
+//			if (stamplingar != null) {
+//				String newtimes = "";
+//				for (String stampling : stamplingar) {
+//					newtimes += stampling + "\n";
+//				}
+//				txtTimes.setText(newtimes);
+//			}
+//		});
+//		contentPane.add(btnFetch, fetchButtonGBLayout);
 
 		JTextPane txtHelptext = new JTextPane();
 		txtHelptext.setEnabled(false);

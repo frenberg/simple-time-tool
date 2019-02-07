@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 class Tid {
@@ -21,6 +17,7 @@ class Tid {
 
 	Map<String, String> calculate(String input, boolean dayBeforeHoliday,
 			HashMap<Integer, Double> schema) {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		Calendar cal = Calendar.getInstance();
 		currentTimeMillis = cal.getTimeInMillis();
 
@@ -29,7 +26,8 @@ class Tid {
 		long workingTimeMillis = getScheduledWorkingTimeInMillis(dayBeforeHoliday, schema, cal);
 
 		// Parse input from user/crona tid integration
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("H:mm");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		int      numberOfValidInputs = 0;
 		long     time                = 0, tmpTime = 0, accumulatedTime = 0, lastTime = 0, longestPause = 0;
@@ -41,7 +39,7 @@ class Tid {
 				numberOfValidInputs++;
 
 				try {
-					time = simpleDateFormat.parse(line).getTime();
+					time = dateFormat.parse(line).getTime();
 				} catch (ParseException e) {
 					// Should not be possible with correct regexp above
 					numberOfValidInputs--;
@@ -70,7 +68,7 @@ class Tid {
 		if (numberOfValidInputs % 2 == 1 && numberOfValidInputs > 0) {
 
 			try {
-				time = simpleDateFormat.parse(simpleDateFormat.format(new Date(currentTimeMillis)))
+				time = dateFormat.parse(dateFormat.format(new Date(currentTimeMillis)))
 						.getTime(); // minutes
 			} catch (ParseException e) {
 				// Should not be possible
@@ -97,19 +95,19 @@ class Tid {
 			returnStrings.put("notificationTime", Long.toString(timeToLeaveInMillis));
 			returnStrings.put("response",
 					String.format(
-							"Du får gå hem %s, går du hem nu har du jobbat %.2f timmar (%.2fh).",
-							simpleDateFormat.format(new Date(timeToLeaveInMillis)),
-							accumulatedTime / 3600000.0,
-							Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
+							"Du får gå hem %s, går du hem nu har du jobbat %s timmar (%s).",
+							dateFormat.format(new Date(timeToLeaveInMillis)),
+							dateFormat.format(new Date(accumulatedTime)),
+							dateFormat.format(new Date(workingTimeMillis - accumulatedTime))));
 		} else {
 			// Summarize (remove one hour for lunch if just two times
 			if (numberOfValidInputs == 2) {
 				accumulatedTime -= 3600000;
 			}
 			returnStrings.put("response",
-					String.format("Summerad arbetstid: %.2f timmar (%.2fh).",
-							accumulatedTime / 3600000.0,
-							Math.abs((workingTimeMillis - accumulatedTime) / 3600000.0)));
+					String.format("Summerad arbetstid: %s timmar (%s).",
+							dateFormat.format(new Date(accumulatedTime)),
+							dateFormat.format(new Date(Math.abs(workingTimeMillis - accumulatedTime)))));
 		}
 
 		writeLog(String.format("%.2f", accumulatedTime / 3600000.0));
